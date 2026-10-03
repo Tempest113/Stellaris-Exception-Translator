@@ -1,0 +1,27 @@
+Application: Stellaris 
+Version: 4.5.1 
+Date/Time: 2026-10-03 00:52:33
+
+Unhandled Exception C0000005 (EXCEPTION_ACCESS_VIOLATION) at address 0x00007FF71150B420
+
+Stack Trace: 
+  1                             PHYSFS_swapSLE64 (+ 3871744)
+  2                             PHYSFS_swapSLE64 (+ 3854347)
+  3                             PHYSFS_writeUBE64 (+ 101236)
+  4                             PHYSFS_swapSLE64 (+ 3880166)
+  5                             PHYSFS_swapSLE64 (+ 3856841)
+  6                             PHYSFS_swapSLE64 (+ 3859752)
+  7                             PHYSFS_writeUBE64 (+ 101236)
+  8                             PHYSFS_swapSLE64 (+ 3880166)
+  9                             PHYSFS_swapSLE64 (+ 3867565)
+  10                            PHYSFS_swapSLE64 (+ 3863829)
+  11                            PHYSFS_swapSLE64 (+ 372855)
+  12                            PHYSFS_swapSLE64 (+ 389385)
+  13                            PHYSFS_swapSLE64 (+ 380762)
+  14                            (function-name not available) (+ 0)
+  15                            (function-name not available) (+ 0)
+  16                            PHYSFS_writeUBE64 (+ 5060946)
+  17                            PHYSFS_writeUBE64 (+ 4778222)
+  18                            BaseThreadInitThunk (+ 23)
+  19                            RtlUserThreadStart (+ 44)
+  20                            RtlUserThreadStart (+ 44)

@@ -1,0 +1,14 @@
+node_modules/
+web/dist/
+__pycache__/
+*.pyc
+# Never commit game files (see README "Guardrails")
+*.exe
+*.dll
+*.pdb
+*.dmp
+*.so
+depot_*/
+
+# Local crash files used for manual testing; never commit
+web/public/__local/

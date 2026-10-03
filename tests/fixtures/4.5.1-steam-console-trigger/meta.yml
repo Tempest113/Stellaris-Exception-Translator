@@ -1,0 +1,50 @@
+# Crash Information
+AppName: Stellaris 
+AppVersion: 4.5.1 
+SCMBranch: release/4.5.1/develop 
+SCMCommit: e3571f2dcc9ee8efd8cdc137b9c9b2d239102558 
+SCMTimeStamp: "2026-09-24 13:42:57 +0200" 
+DateTime: "2026-10-03 10:32:55 +0100" 
+BuildType: Release 
+Platform: Windows 
+Store: steam 
+Architecture: 64-bit 
+LaunchArguments: -gdpr-compliant  
+DLC_1: Ancient Relics Story Pack 
+DLC_2: Anniversary Portraits 
+DLC_3: Apocalypse 
+DLC_4: Aquatics Species Pack 
+DLC_5: Arachnoid Portrait Pack 
+DLC_6: Astral Planes 
+DLC_7: BioGenesis 
+DLC_8: Cosmic Storms 
+DLC_9: Distant Stars Story Pack 
+DLC_10: Federations 
+DLC_11: First Contact Story Pack 
+DLC_12: Galactic Paragons 
+DLC_13: Grand Archive 
+DLC_14: Horizon Signal 
+DLC_15: Humanoids Species Pack 
+DLC_16: Infernals Species Pack 
+DLC_17: Leviathans Story Pack 
+DLC_18: Lithoids Species Pack 
+DLC_19: Megacorp 
+DLC_20: Necroids Species Pack 
+DLC_21: Nemesis 
+DLC_22: Nomads 
+DLC_23: Overlord 
+DLC_24: Plantoids Species Pack 
+DLC_25: Rick The Cube Species Portrait 
+DLC_26: Shadows of the Shroud 
+DLC_27: Stargazer Species Portrait 
+DLC_28: Synthetic Dawn Story Pack 
+DLC_29: The Machine Age 
+DLC_30: Toxoids Species Pack 
+DLC_31: Utopia 
+DLC_32: Vipra the Vapor Species Portrait 
+Mod_1: Gigastructural Engineering DEV 
+Mod_2: UI Overhaul Dynamic 
+Mod_3: UI Overhaul Dynamic + Gigastructural Engineering 
+
+# Application Specific Data 
+ChecksumStatus: Modified 

@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "builds": [
+    {
+      "version": "4.5.1",
+      "store": "steam",
+      "platform": "windows",
+      "scmCommit": "e3571f2dcc9ee8efd8cdc137b9c9b2d239102558",
+      "file": "4.5.1/steam-windows.json",
+      "names": 23022
+    }
+  ]
+}
