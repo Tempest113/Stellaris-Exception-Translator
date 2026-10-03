@@ -1,4 +1,4 @@
-// Turns parsed frames into game addresses, function locations and patterns.
+// Turns parsed frames into game addresses and function locations.
 
 import type { BuildData, FunctionHit, Label } from './buildData';
 import type { ExceptionFrame, ParsedException } from '../parse/exception';
@@ -15,15 +15,6 @@ export interface AnalyzedFrame {
   func?: FunctionHit;
   label?: Label;
   external?: ExternalHint | null;
-  /** Other frame indices showing the exact same code location. */
-  repeatsAt?: number[];
-}
-
-export interface Recursion {
-  /** First occurrence, as 1-based frame numbers, e.g. [3, 4]. */
-  first: number[];
-  /** Each later occurrence of the same block. */
-  again: number[][];
 }
 
 export interface BaseCheck {
@@ -35,7 +26,6 @@ export interface BaseCheck {
 export interface FrameAnalysis {
   frames: AnalyzedFrame[];
   base: BaseCheck;
-  recursion: Recursion[];
   crashedInGame: boolean | null;
 }
 
@@ -43,11 +33,9 @@ const GAME_MODULE = /^stellaris(\.exe)?$/i;
 
 export function analyzeFrames(parsed: ParsedException, build: BuildData | null): FrameAnalysis {
   const frames = parsed.frames.map((frame) => classify(frame, build));
-  markRepeats(frames);
   return {
     frames,
     base: checkBase(parsed, frames, build),
-    recursion: findRecursion(frames),
     crashedInGame: frames.length ? frames[0].kind === 'game' : null,
   };
 }
@@ -71,66 +59,6 @@ function classify(frame: ExceptionFrame, build: BuildData | null): AnalyzedFrame
   const func = build!.lookup(rva) ?? undefined;
   const label = func ? build!.label(func.ownerStart) : undefined;
   return { frame, kind: 'game', rva, func, label };
-}
-
-function key(f: AnalyzedFrame): string {
-  return f.rva !== undefined ? `rva:${f.rva}` : `${f.frame.module ?? ''}|${f.frame.symbol}|${f.frame.offset}`;
-}
-
-function markRepeats(frames: AnalyzedFrame[]): void {
-  const seen = new Map<string, number[]>();
-  frames.forEach((f, i) => {
-    if (f.kind !== 'game' || f.frame.offset === 0) return;
-    const k = key(f);
-    seen.set(k, [...(seen.get(k) ?? []), i]);
-  });
-  for (const positions of seen.values()) {
-    if (positions.length < 2) continue;
-    for (const i of positions) frames[i].repeatsAt = positions.filter((p) => p !== i).map((p) => frames[p].frame.index);
-  }
-}
-
-/**
- * Finds blocks of consecutive frames that appear again further down the
- * stack: the game re-entered the same code while it was still running, e.g.
- * an effect firing an event that runs the same kind of effect again.
- */
-export function findRecursion(frames: AnalyzedFrame[]): Recursion[] {
-  const keys = frames.map((f) => (f.kind === 'game' && f.frame.offset !== 0 ? key(f) : null));
-  const covered = new Set<number>();
-  const result: Recursion[] = [];
-
-  const span = (start: number, len: number) => Array.from({ length: len }, (_, k) => frames[start + k].frame.index);
-
-  for (let i = 0; i < keys.length; i++) {
-    if (keys[i] === null || covered.has(i)) continue;
-    const again: number[][] = [];
-    let longest = 0;
-    // Distance to the first repeat: a repeated block can't be longer than that.
-    let period = 0;
-    for (let j = i + 1; j < keys.length; j++) {
-      if (keys[j] !== keys[i] || covered.has(j)) continue;
-      if (period === 0) period = j - i;
-      let len = 0;
-      while (
-        len < period &&
-        j + len < keys.length &&
-        keys[i + len] !== null &&
-        keys[i + len] === keys[j + len] &&
-        !covered.has(j + len)
-      ) {
-        len++;
-      }
-      for (let k = j; k < j + len; k++) covered.add(k);
-      again.push(span(j, len));
-      longest = Math.max(longest, len);
-      j += len - 1;
-    }
-    if (again.length === 0) continue;
-    for (let k = i; k < i + longest; k++) covered.add(k);
-    result.push({ first: span(i, longest), again });
-  }
-  return result;
 }
 
 function checkBase(parsed: ParsedException, frames: AnalyzedFrame[], build: BuildData | null): BaseCheck {

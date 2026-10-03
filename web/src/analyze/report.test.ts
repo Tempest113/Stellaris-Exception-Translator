@@ -2,14 +2,14 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { BuildData, type BuildDataFile, type BuildIndex } from './buildData';
-import { findRecursion, analyzeFrames } from './frames';
+import { analyzeFrames } from './frames';
 import { checkMods } from './mods';
 import { buildReport, type DataLoader } from './report';
 import { parseException } from '../parse/exception';
 import { fakeMinidump } from '../parse/fakeMinidump';
 
 const ROOT = resolve(__dirname, '../../..');
-const fixture = (name: string) => readFileSync(resolve(ROOT, 'tests/fixtures/4.5.1-steam-recursion', name), 'utf8');
+const fixture = (name: string) => readFileSync(resolve(ROOT, 'tests/fixtures/4.5.1-steam-broken-modlist', name), 'utf8');
 const dataDir = resolve(ROOT, 'web/public/data');
 
 const fsLoader: DataLoader = {
@@ -54,10 +54,6 @@ describe('4.5.1 Steam crash (real sample)', async () => {
     expect(frames.frames[13].kind).toBe('unknown');
   });
 
-  it('detects frames 3-4 recurring at 7-8', () => {
-    expect(frames.recursion).toEqual([{ first: [3, 4], again: [[7, 8]] }]);
-    expect(frames.frames[2].repeatsAt).toEqual([7]);
-  });
 
   it('flags the mod tagged for 4.3 as possibly outdated', () => {
     const outdated = report.mods.filter((m) => m.outdated).map((m) => m.name);
@@ -74,8 +70,6 @@ describe('4.5.1 Steam crash (real sample)', async () => {
   it('states only facts in the summary', () => {
     expect(report.location).toEqual({ module: 'stellaris.exe', inGame: true, hint: null });
     expect(report.clues).toEqual(['1 mod is tagged for an older game version: [4.3] Birch Origin Fix.']);
-    // Code appearing twice is normal nesting, not flagged as a clue.
-    expect(report.clues.some((c) => /nested/.test(c))).toBe(false);
     expect(report.access).toBeNull();
   });
 });
@@ -113,6 +107,25 @@ describe('4.5.1 Steam crash from a console trigger in the main menu (real sample
     expect(named).toContain('CConsoleCmdManager::Execute');
     expect(named).toContain('CConsole::RunCommandNow');
     expect(report.notices.filter((n) => n.level !== 'info')).toEqual([]);
+  });
+});
+
+describe('4.5.1 Steam crash from reload_gui after deleting UI files (real sample)', async () => {
+  const gui = (name: string) => readFileSync(resolve(ROOT, 'tests/fixtures/4.5.1-steam-reload-gui', name), 'utf8');
+  const report = await buildReport({ exception: gui('exception.txt'), meta: gui('meta.yml'), sources: [] }, fsLoader);
+  const named = report.frames!.frames.map((f) => f.label?.name ?? null);
+
+  it('names the GUI reload path', () => {
+    expect(report.frames!.base.status).toBe('ok');
+    expect(named).toContain('OnExecute_ReloadGUI');
+    expect(named).toContain('CClausewitzReloadManager::Reload');
+    expect(named).toContain('CContainerWindowType::Instantiate');
+  });
+
+  it('adds no clues for windows nested inside windows', () => {
+    // Frames 5-13 repeat because the UI layout is nested three windows deep:
+    // that's structure, not a fault, so the report says nothing about it.
+    expect(report.clues).toEqual([]);
   });
 });
 
@@ -205,22 +218,7 @@ describe('3.x format (module column)', () => {
 });
 
 describe('helpers', () => {
-  it('finds deep recursion blocks', () => {
-    const keys = ['a', 'b', 'c', 'a', 'b', 'c', 'a', 'b', 'd'];
-    const frames = keys.map((k, i) => ({
-      frame: { index: i + 1, module: null, symbol: k, offset: 1, raw: k },
-      kind: 'game' as const,
-    }));
-    expect(findRecursion(frames)).toEqual([{ first: [1, 2, 3], again: [[4, 5, 6], [7, 8]] }]);
-  });
 
-  it('folds a single frame repeating many times', () => {
-    const frames = ['x', 'x', 'x', 'x'].map((k, i) => ({
-      frame: { index: i + 1, module: null, symbol: k, offset: 1, raw: k },
-      kind: 'game' as const,
-    }));
-    expect(findRecursion(frames)).toEqual([{ first: [1], again: [[2], [3], [4]] }]);
-  });
 
   it('only treats square-bracket tags as version tags', () => {
     const checks = checkMods(['[4.5] New', '[3.14] Old', 'Mod (2.0)', '[v4.4.1+] Mid'], '4.5.1');

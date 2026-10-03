@@ -38,7 +38,3 @@ Even without names, addresses are exact and stable *within a version*: two crash
 
 - **Exception record.** For access violations it gives the kind of access (read, write or execute) and the exact address. An address in the first 64 KB is a null pointer, because Windows never maps that range.
 - **Module list.** It shows which exe or DLL the crash happened in. That matters for 4.x, whose `exception.txt` has no module column. It also gives `stellaris.exe`'s link timestamp, which must equal the timestamp in the version's data file, so a hotfix with the same version number can't be mistaken for the build we have data for.
-
-## Repeated frames
-
-When the same code location appears more than once in a stack, that code is running nested inside itself. This is normal; nested script blocks do it routinely. The report only calls it out when the nesting goes at least three levels deep or the crash is a stack overflow.

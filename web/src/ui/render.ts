@@ -2,7 +2,7 @@
 
 import type { Report } from '../analyze/report';
 import type { AnalyzedFrame } from '../analyze/frames';
-import { frameLocation, functionDetail, range } from './format';
+import { frameLocation, functionDetail } from './format';
 
 const esc = (s: unknown) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -67,15 +67,6 @@ function stack(r: Report): string {
   const fa = r.frames;
   if (!fa || fa.frames.length === 0) return '';
   const hasNames = (r.buildData?.labelCount ?? 0) > 0;
-  // Code appearing twice is normal (e.g. nested script blocks); only call it
-  // out when it's deep, or when the stack actually overflowed.
-  const overflow = (r.dump?.exception?.code ?? r.parsed?.exceptionCode) === 'C00000FD';
-  const deep = fa.recursion.filter((x) => overflow || x.again.length >= 2);
-  const recursion = deep.length
-    ? `<div class="callout">${deep
-        .map((x) => `Frames ${range(x.first)} repeat at ${x.again.map(range).join(', ')}.`)
-        .join(' ')} The same code is running nested inside itself${overflow ? ', which is what used up the stack' : ''}.</div>`
-    : '';
   const noNames = !r.buildData
     ? ''
     : hasNames
@@ -84,7 +75,6 @@ function stack(r: Report): string {
   return `
   <section class="card">
     <h3>Stack trace</h3>
-    ${recursion}
     <div class="table-wrap"><table class="stack">
       <thead><tr><th>#</th><th>Location</th>${hasNames ? '<th>Function</th>' : ''}<th>Notes</th></tr></thead>
       <tbody>${fa.frames.map((f) => frameRow(f, hasNames)).join('')}</tbody>
@@ -94,7 +84,7 @@ function stack(r: Report): string {
 }
 
 function frameRow(f: AnalyzedFrame, hasNames: boolean): string {
-  const cls = `kind-${f.kind}${f.repeatsAt ? ' repeats' : ''}`;
+  const cls = `kind-${f.kind}`;
   let where = '';
   let fn = '';
   const notes: string[] = [];
@@ -117,7 +107,6 @@ function frameRow(f: AnalyzedFrame, hasNames: boolean): string {
   } else {
     where = '<span class="muted">unknown</span>';
   }
-  if (f.repeatsAt) notes.push(`same as frame ${f.repeatsAt.join(', ')}`);
   return `<tr class="${cls}"><td>${f.frame.index}</td><td>${where}</td>${hasNames ? `<td>${fn}</td>` : ''}<td>${notes.join('. ')}</td></tr>`;
 }
 

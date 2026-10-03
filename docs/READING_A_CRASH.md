@@ -31,7 +31,7 @@ The detailed address information comes from `minidump.dmp`. Without it, the repo
   | `CGui…`, `…Render…` | Interface or graphics | `.gui` and `.gfx` content, then graphics drivers |
 
 - **"likely" names are leads, not facts.** Names without the badge are strongly supported but can still be wrong. Hover a name to see how it was matched. Unnamed frames are mostly runtime or boilerplate code, or functions the matching couldn't pair.
-- **"same as frame N" is normal nesting**, such as one script block inside another. It only matters when it's very deep or the crash is a stack overflow.
+- **Repeated function names are usually nesting, not a loop.** Examples are a script block inside a block, or a window inside a window (a `.gui` file's layout shows up this way). Repetition only points at a loop when the fault line says *stack overflow*.
 
 ## 3. Narrowing it down
 
@@ -56,5 +56,6 @@ These are real crashes, deliberately caused with known broken content. Each one 
 | A deliberately broken mod list | Start-up → `CSystemInitializerDataBase::InitFromFile` → `CPersistent::Read…` → `NParserUtil::ReadKeyReference<…>` → **null pointer** |
 | A technology with its area, tier and category removed | Start-up → `NNullObjAndDatabaseInitUtil::SetupDatabases` → `CTechnologyDatabase::PostReadInitInstance` → **garbage pointer** |
 | The console command `trigger has_global_flag = x` run in the main menu, with no game loaded | Normal play → `CConsole::RunCommandNow` → `OnExecute_TestTrigger` → `ReadAndEvaluateTrigger` → **null pointer** |
+| UI files deleted mid-game, then `reload_gui` | Console → `OnExecute_ReloadGUI` → `CClausewitzReloadManager::Reload` → `CParagonPortraitContainer::Reload` → windows nested three deep (`CContainerWindowType::Instantiate`) → `CViewNavigator::HandleNavigationFor` → **access violation** |
 
 In each case, the phase plus the named game system pointed at the cause, and the fault line confirmed what kind of mistake it was.

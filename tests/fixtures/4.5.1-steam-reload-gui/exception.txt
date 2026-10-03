@@ -1,0 +1,41 @@
+Application: Stellaris 
+Version: 4.5.1 
+Date/Time: 2026-10-03 15:14:54
+
+Unhandled Exception C0000005 (EXCEPTION_ACCESS_VIOLATION) at address 0x00007FF7CD155F70
+
+Stack Trace: 
+  1                             PHYSFS_swapSLE64 (+ 2604880)
+  2                             PHYSFS_swapSLE64 (+ 2603347)
+  3                             PHYSFS_writeUBE64 (+ 823035)
+  4                             PHYSFS_writeUBE64 (+ 529569)
+  5                             PHYSFS_writeUBE64 (+ 763239)
+  6                             PHYSFS_writeUBE64 (+ 585453)
+  7                             PHYSFS_writeUBE64 (+ 559541)
+  8                             PHYSFS_writeUBE64 (+ 529249)
+  9                             PHYSFS_writeUBE64 (+ 763239)
+  10                            PHYSFS_writeUBE64 (+ 585453)
+  11                            PHYSFS_writeUBE64 (+ 559541)
+  12                            PHYSFS_writeUBE64 (+ 529249)
+  13                            PHYSFS_writeUBE64 (+ 763239)
+  14                            PHYSFS_writeUBE64 (+ 488611)
+  15                            PHYSFS_writeUBE64 (+ 552581)
+  16                            PHYSFS_swapSLE64 (+ 19043473)
+  17                            PHYSFS_swapSLE64 (+ 26096794)
+  18                            PHYSFS_swapSLE64 (+ 26095206)
+  19                            PHYSFS_swapSLE64 (+ 27182844)
+  20                            PHYSFS_swapSLE64 (+ 14032892)
+  21                            PHYSFS_ucs4stricmp (+ 1500)
+  22                            PHYSFS_swapSLE64 (+ 27169939)
+  23                            PHYSFS_swapSLE64 (+ 26971457)
+  24                            PHYSFS_swapSLE64 (+ 26957940)
+  25                            PHYSFS_swapSLE64 (+ 1938181)
+  26                            PHYSFS_swapSLE64 (+ 26155345)
+  27                            PHYSFS_swapSLE64 (+ 26156520)
+  28                            (function-name not available) (+ 0)
+  29                            (function-name not available) (+ 0)
+  30                            PHYSFS_writeUBE64 (+ 5060946)
+  31                            PHYSFS_writeUBE64 (+ 4778222)
+  32                            BaseThreadInitThunk (+ 23)
+  33                            RtlUserThreadStart (+ 44)
+  34                            RtlUserThreadStart (+ 44)

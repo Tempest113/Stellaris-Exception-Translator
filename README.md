@@ -22,7 +22,7 @@ The report states facts from the crash files and leaves out guesses about causes
 ```
 web/            static site (Vite + TypeScript), deployed to GitHub Pages
   src/parse/      exception.txt, meta.yml and minidump.dmp parsers
-  src/analyze/    address translation, recursion detection, fault and mod checks
+  src/analyze/    address translation, fault and mod checks
   src/ui/         rendering and file input
   public/data/    per-version address data and community labels
 pipeline/       Python (standard library only) tools that build the per-version data

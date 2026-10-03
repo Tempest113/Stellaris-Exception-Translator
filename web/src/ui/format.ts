@@ -16,8 +16,3 @@ export function functionDetail(f: AnalyzedFrame): string {
     ? `function ${hex(f.func.ownerStart)} + ${hex(f.rva - f.func.ownerStart)}`
     : `small helper function after ${hex(f.func.start)}`;
 }
-
-/** "3–4" for a run of frame numbers, "3" for one. */
-export function range(frames: number[]): string {
-  return frames.length > 1 ? `${frames[0]}–${frames[frames.length - 1]}` : `${frames[0]}`;
-}

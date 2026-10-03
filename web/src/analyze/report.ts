@@ -179,12 +179,12 @@ export async function buildReport(inputs: CrashInputs, loader: DataLoader): Prom
     supported: index.builds,
     frames,
     mods,
-    clues: clues(location, frames, mods),
+    clues: clues(location, mods),
     notices,
   };
 }
 
-function clues(location: CrashLocation | null, frames: FrameAnalysis | null, mods: ModCheck[]): string[] {
+function clues(location: CrashLocation | null, mods: ModCheck[]): string[] {
   const out: string[] = [];
   if (location && !location.inGame && location.hint?.note) out.push(location.hint.note);
 
@@ -192,10 +192,6 @@ function clues(location: CrashLocation | null, frames: FrameAnalysis | null, mod
   if (outdated.length) {
     const names = outdated.slice(0, 3).map((m) => m.name).join(', ') + (outdated.length > 3 ? ', …' : '');
     out.push(`${outdated.length} mod${outdated.length > 1 ? 's are' : ' is'} tagged for an older game version: ${names}.`);
-  }
-
-  for (const r of frames?.recursion ?? []) {
-    if (r.again.length >= 2) out.push(`The same code is nested ${r.again.length + 1} levels deep (frames ${r.first[0]} and onwards).`);
   }
   return out;
 }
