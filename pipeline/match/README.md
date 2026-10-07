@@ -32,6 +32,8 @@ time and add nothing for matching (Decompiler Parameter ID, Stack, PDB).
 set H=%S%\ghidra\ghidra_12.1.4_PUBLIC\support\analyzeHeadless.bat
 set SCRIPTS=C:\path\to\repo\pipeline\ghidra_scripts
 
+mkdir %S%\ghidra\proj_win %S%\ghidra\proj_linux0
+
 call %H% %S%\ghidra\proj_win stellaris_win -import %S%\bin_win\stellaris.exe ^
      -scriptPath %SCRIPTS% -preScript SetAnalysisOptions.java
 
@@ -74,19 +76,22 @@ Run from the repository root. Each run takes about 7-8 minutes.
 ```bat
 set EXE="C:\Program Files (x86)\Steam\steamapps\common\Stellaris\stellaris.exe"
 set IN=--win-features %S%\features-windows.jsonl --win-vtables %S%\vtables-windows.jsonl ^
-       --linux-features %S%\features-linux.jsonl --linux-vtables %S%\vtables-linux.jsonl --exe %EXE%
+       --linux-features %S%\features-linux.jsonl --linux-vtables %S%\vtables-linux.jsonl --exe %EXE% ^
+       --version 4.5.2
 
 rem a) validation: ground-truth literals removed from the features, and 20% of
 rem    the literal-anchored pairs stripped of all literals
 python -m pipeline.match %IN% --holdout-gt --holdout-anchors 0.2 --report %S%\report-validation.json
 
 rem b) final names, confidence capped per method by the validation run
-python -m pipeline.match %IN% --calibrate-from %S%\report-validation.json ^
-       --out %S%\names-4.5.1-steam.json --report %S%\report-final.json ^
-       --rvas 0x50b350,0x506fe0,0x1bab4a0
+python -m pipeline.match %IN% --calibrate-from %S%\report-validation.json --generic-icf-names ^
+       --out %S%\names-4.5.2-steam.json --report %S%\report-final.json
+
+rem c) merge into the site's data for that version
+python pipeline\add_version.py --exe %EXE% --version 4.5.2 --names %S%\names-4.5.2-steam.json
 ```
 
-Output: `{"schema":1,"version":"4.5.1","store":"steam","names":[[rva, name, method, confidence], ...]}`.
+Output: `{"schema":1,"version":"4.5.2","store":"steam","names":[[rva, name, method, confidence], ...]}`.
 `rva` is the primary `.pdata` entry's begin RVA (chained fragments are folded
 into their owner). Names are withheld when the Linux code is shared by several
 differently named functions, or when paired vtables show one Windows body

@@ -4,7 +4,7 @@ Run from the repository root (full commands, Ghidra steps and timings in
 pipeline/match/README.md):
 
     python -m pipeline.match <inputs> --holdout-gt --holdout-anchors 0.2         --report report-validation.json
-    python -m pipeline.match <inputs> --calibrate-from report-validation.json         --out names-4.5.1-steam.json --report report-final.json --rvas 0x50b350,...
+    python -m pipeline.match <inputs> --calibrate-from report-validation.json         --version 4.5.2 --out names-4.5.2-steam.json --report report-final.json
 
     <inputs> = --win-features features-windows.jsonl --win-vtables vtables-windows.jsonl
                --linux-features features-linux.jsonl --linux-vtables vtables-linux.jsonl
@@ -39,7 +39,7 @@ def main(argv=None) -> int:
     ap.add_argument("--win-vtables")
     ap.add_argument("--linux-vtables")
     ap.add_argument("--exe", required=True, help="the Windows stellaris.exe the features came from")
-    ap.add_argument("--version", default="4.5.1")
+    ap.add_argument("--version", required=True, help="game version of these binaries, e.g. 4.5.2")
     ap.add_argument("--store", default="steam")
     ap.add_argument("--out", help="names JSON to write")
     ap.add_argument("--report", help="validation / statistics JSON to write")
