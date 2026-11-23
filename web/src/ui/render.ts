@@ -71,7 +71,7 @@ function stack(r: Report): string {
     ? ''
     : hasNames
       ? '<p class="muted small">Function names are matched from the Linux build of the game and can be wrong. Hover a name for details.</p>'
-      : `<p class="muted small">Function names aren't available for ${esc(r.version)} yet.</p>`;
+      : `<p class="muted small">Function names aren't available for ${esc(r.version)}.</p>`;
   return `
   <section class="card">
     <h3>Stack trace</h3>
