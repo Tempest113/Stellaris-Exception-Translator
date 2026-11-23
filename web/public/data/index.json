@@ -2,6 +2,14 @@
   "schema": 1,
   "builds": [
     {
+      "version": "4.6.0",
+      "store": "steam",
+      "platform": "windows",
+      "scmCommit": null,
+      "file": "4.6.0/steam-windows.json",
+      "names": 0
+    },
+    {
       "version": "4.5.2",
       "store": "steam",
       "platform": "windows",

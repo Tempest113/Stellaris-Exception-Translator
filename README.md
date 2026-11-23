@@ -14,8 +14,8 @@ The report states facts from the crash files and leaves out guesses about causes
 
 | | |
 |---|---|
-| Supported builds | 4.5.2 and 4.5.1 (Steam, Windows) |
-| Function names | About 23,000 per version, matched from the Linux build. That's 21% of all functions and 35% of game code; about 99.4% precise on held-out checks. See [pipeline/match](pipeline/match/README.md) |
+| Supported builds | 4.6.0, 4.5.2 and 4.5.1 (Steam, Windows) |
+| Function names | About 23,000 per version for 4.5.x, matched from the Linux build. That's 21% of all functions and 35% of game code; about 99.4% precise on held-out checks. See [pipeline/match](pipeline/match/README.md). None for 4.6.0: its Linux build ships stripped of symbols |
 
 ## Repository layout
 
