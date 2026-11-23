@@ -5,7 +5,7 @@
       "version": "4.6.0",
       "store": "steam",
       "platform": "windows",
-      "scmCommit": null,
+      "scmCommit": "7a28fe4f5c9ea23b8eb8e182a8ce4b7d0a1b5a9c",
       "file": "4.6.0/steam-windows.json",
       "names": 0
     },
